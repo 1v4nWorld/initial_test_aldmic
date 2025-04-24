@@ -76,6 +76,5 @@ The Laravel framework is open-source software licensed under the [MIT license](h
 
 clone GIT repository
 
-docker build -t initial_test_aldmic .
-docker container create --name initial_test_aldmic --rm -p 80:80 initial_test_aldmic && docker container start initial_test_aldmic
-docker container stop initial_test_aldmic
+docker pull ghcr.io/1v4nworld/php7.3.29-apache-laravel
+docker container create --name initial_test_aldmic -v /root/initial_test_aldmic:/var/www/html --publish 80:80 ghcr.io/1v4nworld/php7.3.29-apache-laravel
