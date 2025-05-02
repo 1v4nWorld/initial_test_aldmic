@@ -74,7 +74,44 @@ The Laravel framework is open-source software licensed under the [MIT license](h
 
 ## Deployment Command (PROD-environment)
 
-clone GIT repository
+mkdir initial_test_aldmic
+mkdir initial_test_aldmic_db
+cd ~/initial_test_aldmic
+
+git clone git@github.com:1v4nWorld/initial_test_aldmic.git .
+
+docker network create localnet
+
+docker pull mysql:8.0.30
+
+docker container create \
+  --name db-mysql80 \
+  --network localnet \
+  -p 3306:3306 \
+  -v /root/initial_test_aldmic_db:/var/lib/mysql \
+  -e MYSQL_ROOT_PASSWORD=password \
+  mysql:8.0.30
+
+docker container start db-mysql80
+
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';FLUSH PRIVILEGES;
 
 docker pull ghcr.io/1v4nworld/php7.3.29-apache-laravel
-docker container create --name initial_test_aldmic -v /root/initial_test_aldmic:/var/www/html --publish 80:80 ghcr.io/1v4nworld/php7.3.29-apache-laravel
+
+docker container create \
+  --name initial_test_aldmic \
+  --network localnet \
+  -p 8000:80 \
+  -v /root/initial_test_aldmic:/var/www/html \
+  ghcr.io/1v4nworld/php7.3.29-apache-laravel
+
+docker container start initial_test_aldmic
+
+docker container exec -i -t initial_test_aldmic /bin/bash
+
+composer install
+npm install
+php artisan migrate
+php artisan db:seed --class=MasterAccount
+chmod -R 777 storage

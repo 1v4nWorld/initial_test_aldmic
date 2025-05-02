@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    Laravel inside Docker Environtment
+                    Laravel inside Docker Environment
                 </div>
 
                 <div class="links">
